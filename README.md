@@ -1,0 +1,94 @@
+# DeeperThawt
+
+**Deterministic verifiable reasoning engine** — solves hard math, verifies logic, retrieves cited knowledge, and detects semantically-near token waste — with **zero hallucination**, because the answers are computed, not guessed.
+
+- **Symbolic math oracle** — deterministic SymPy solver: integrals, systems, Fibonacci, primes, modular arithmetic, inequality. Verifies true claims (`2 + 2 = 4` → **TRUE**), refutes false ones (`2 + 2 = 5` → **REFUTED**, with witnesses), and honestly abstains on what it can't prove.
+- **Logic engine** — modus ponens/tollens, syllogism, conjunction, double-negation. `verified / invalid / insufficient` — never guesses.
+- **Cited knowledge** — known theorems (Euclid, Fermat, etc.), science facts, Python knowledge. Retrieval with citations, *not* generation.
+- **Semantic token intelligence** — the secret engine (gematria projection + fixed-parameter attention + trained latent adapter) runs **server-side** and returns only numbers. It finds the near-duplicate token waste exact-dedupe misses.
+
+## Architecture: secret ingredients stay remote
+
+```
+  ┌────────────────────────────────────────────────────────────┐
+  │  DeeperThawt (pip package, local)                           │
+  │                                                            │
+  │  · math oracle          (deterministic, SHIPPED)            │
+  │  · logic engine         (deterministic, SHIPPED)            │
+  │  · cited knowledge      (deterministic, SHIPPED)            │
+  │  · semantic RPC client  (numeric-only, SHIPPED)             │
+  │                        ╭───────────────────╮               │
+  └────────────────────────┤  POST /assess     │───────────────┘
+                           │  (de-identified)  │
+                           │        ▼          │
+                           │  REMOTE server    │
+                           │  · gematria proj. │  ══ THE SECRET ══
+                           │  · attention      │  engine + tuned
+                           │  · trained adapter│  weights live
+                           │  · tuned weights  │  ONLY HERE
+                           ╰───────────────────╯
+```
+
+The **secret ingredients** — the semantic projection method, the fixed-parameter attention, the trained latent adapter, and the tuned weights — are **never shipped locally**. A local buyer gets a pip package with the deterministic solvers and a thin RPC client; the secret engine runs only on the remote DeeperThawt server behind a paid entitlement gate, returning **numbers only**.
+
+## Install
+
+```bash
+pip install deeperthawt
+# or from source:
+git clone https://github.com/sudo-ai-git/deeperthawt.git
+cd deeperthawt && pip install -e .
+```
+
+## Quick start
+
+```python
+from deeperthawt import DeeperThawt
+
+engine = DeeperThawt()
+
+# Hard math — deterministic, no LLM guessing
+engine.solve_math("integral of x^2 from 0 to 1")   # solved, 1/3
+engine.solve_math("2 + 2 = 5")                     # refuted, with witness
+engine.solve_math("2 + 2 = 4")                     # verified True
+
+# Logic
+engine.verify_logic(
+    ["if it rains then the ground is wet", "it rains"],
+    "the ground is wet")                           # {"status": "valid"}
+
+# Cited knowledge
+engine.knowledge_math_theorem("infinitely many primes")  # Euclid, cited
+engine.knowledge_science("why is the sky blue")          # fact + reference
+
+# Semantic token intelligence — runs on the REMOTE server
+engine = DeeperThawt(api_base="https://mcp-token-saver-pro.fly.dev")
+engine.semantic_assess([...messages...])            # returns numbers only
+```
+
+## CLI
+
+```bash
+deeperthawt math "integral of x^2 from 0 to 1"
+deeperthawt logic "if it rains then the ground is wet; it rains" "the ground is wet"
+deeperthawt theorem "infinitely many primes"
+deeperthawt science "why is the sky blue"
+deeperthawt python "list comprehension"
+deeperthawt selfcheck        # 8/8 capability smoke test
+```
+
+## The honesty contract
+
+1. **Deterministic** — same input → same answer, every time. No stochastic LLM in the scoring path. You can re-run and reproduce.
+2. **No hallucination** — the engine solves/verifies/refutes what it can *prove*, and **abstains** (says "not verifiable") on what it can't. It never invents an answer.
+3. **Opaque but auditable** — the deterministic solvers are open (AGPL). The semantic engine is server-side; you see the **contract and the number**, not the method.
+4. **What it doesn't claim** — DeeperThawt does not generate prose, write code, or "reason" generally. It *computes* and *verifies*. The claims on this page are about provable operations.
+
+## License: dual-license
+
+- **Open core (AGPL-3.0)**: the deterministic solvers (math, logic, knowledge) are open source under AGPL.
+- **Commercial license**: available for embedding DeeperThawt inside a **closed-source product or SaaS** without AGPL obligations. See [`LICENSE.commercial.md`](LICENSE.commercial.md).
+
+For a commercial license, contact the maintainer via the [landing page](https://sudo-ai-git.github.io/deeperthawt/).
+
+© 2026 DeeperThawt maintainer.

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeeperThawt — deterministic verifiable reasoning, with zero hallucination</title>
+<meta name="description" content="DeeperThawt: a deterministic reasoning engine that solves hard math, verifies logic, retrieves cited knowledge, and finds semantically-near token waste — computed, never guessed. Dual-licensed (AGPL open core + commercial).">
+<meta property="og:title" content="DeeperThawt — reasoning that computes, never hallucinates">
+<meta property="og:description" content="Hard math solved, logic verified, claims refuted with witnesses, cited knowledge retrieved — all deterministic. And it finds the token waste other profilers can't see.">
+<style>
+  :root{--bg:#070a10;--panel:#0f1420;--panel2:#0b0f18;--border:#1c2637;--text:#eaf0f6;--muted:#8494a7;--acc:#4ade80;--acc2:#22c55e;--cy:#38bdf8;--vi:#a78bfa;--am:#fbbf24;--red:#f87171}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  .hero{padding:80px 0 52px;text-align:center;position:relative}
+  .badge{display:inline-block;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.35);color:var(--acc);border-radius:999px;padding:5px 16px;font-size:13px;font-weight:500;margin-bottom:22px}
+  .hero h1{font-size:clamp(32px,5.4vw,58px);line-height:1.06;font-weight:800;letter-spacing:-1.5px;max-width:860px;margin:0 auto 18px}
+  .hero h1 .g{background:linear-gradient(90deg,var(--acc),var(--cy));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{font-size:19px;color:var(--muted);max-width:680px;margin:0 auto 10px}
+  .cta-row{margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;background:var(--acc2);color:#04140a;font-weight:700;border:none;padding:15px 30px;border-radius:10px;font-size:17px;cursor:pointer;text-decoration:none;transition:.16s;font-family:inherit}
+  .btn:hover{background:var(--acc);transform:translateY(-1px);box-shadow:0 8px 30px rgba(34,197,94,.25)}
+  .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn.ghost:hover{background:var(--panel);border-color:var(--muted)}
+  .btn.vi{background:var(--vi);color:#140a24}
+  .btn.vi:hover{background:var(--vi);opacity:.92}
+
+  section{padding:0 0 60px}
+  h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.8px;margin-bottom:10px;text-align:center}
+  .lead{color:var(--muted);max-width:760px;margin:0 auto 30px;font-size:16px;text-align:center}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:760px){.g2,.g3{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px}
+  .card h3{font-size:18px;margin-bottom:10px}
+  .card p{color:var(--muted);font-size:14.5px}
+  .card .ex{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-top:12px;color:var(--text);white-space:pre-wrap}
+  .card .out{color:var(--acc);font-weight:600}
+  .bad{color:var(--red)} .ok{color:var(--acc)} .cy{color:var(--cy)} .vi{color:var(--vi)} .am{color:var(--am)}
+
+  .term{border:1px solid var(--border);background:var(--panel2);border-radius:12px;padding:22px;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;overflow-x:auto}
+  .term .c{color:var(--muted)} .term .p{color:var(--acc)} .term .o{color:var(--cy)} .term .r{color:var(--red)} .term .y{color:var(--am)}
+
+  .arch{display:grid;grid-template-columns:1.1fr .6fr 1fr;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px}
+  @media(max-width:760px){.arch{grid-template-columns:1fr}}
+  .blk{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+  .blk .t{font-weight:700;font-size:13px;margin-bottom:8px}
+  .blk .i{font-size:11.5px;color:var(--muted);line-height:1.5}
+  .arrow{text-align:center;color:var(--acc);font-weight:800;font-size:22px}
+  .lock{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.4)}
+  .lock .t{color:var(--vi)}
+
+  .lic{background:var(--panel2);border:1px solid var(--border);border-radius:14px;padding:28px;margin-top:30px}
+  .lic table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
+  .lic td,.lic th{border-bottom:1px solid var(--border);padding:12px 10px;text-align:left}
+  .lic th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.8px}
+  .foot{color:var(--muted);font-size:13px;border-top:1px solid var(--border);padding:28px 0 48px;margin-top:8px;text-align:center}
+  .foot a{color:var(--acc);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <span class="badge">Reasoning that computes — it never guesses</span>
+    <h1><span class="g">DeeperThawt</span><br>Deterministic verifiable reasoning, with zero hallucination.</h1>
+    <p>It solves hard math, verifies logic, refutes false claims with witnesses, retrieves cited knowledge, and finds token waste no other profiler can see — all computed, never guessed.</p>
+    <div class="cta-row">
+      <a class="btn" href="#install">Install · pip install deeperthawt</a>
+      <a class="btn ghost" href="#license">Commercial license</a>
+      <a class="btn vi" href="#semantic">The semantic engine</a>
+    </div>
+  </div>
+
+  <!-- PROOF FIRST -->
+  <section>
+    <h2>Proof, not promises</h2>
+    <p class="lead">Every line below is a real output of the engine — deterministic and reproducible.</p>
+    <div class="grid g3">
+      <div class="card"><h3>🧮 Hard math, solved</h3>
+        <div class="ex"><span class="c">$</span> deeperthawt math <span class="ok">"integral of x^2 from 0 to 1"</span>
+<span class="o">solved → 1/3</span></div>
+        <div class="ex"><span class="c">$</span> deeperthawt math <span class="ok">"2 + 2 = 5"</span>
+<span class="bad">refuted</span> — constant difference <span class="am">-1 ≠ 0</span></div>
+        <p>Integrals, linear systems, Fibonacci, primes, modular arithmetic — <strong>deterministic</strong>. Same input → same answer, forever.</p>
+      </div>
+      <div class="card"><h3>⚖️ Logic, verified</h3>
+        <div class="ex"><span class="c">$</span> deeperthawt logic \
+  <span class="ok">"if it rains then the ground is wet; it rains"</span> \
+  <span class="ok">"the ground is wet"</span>
+<span class="o">{status: valid, rule: modus_ponens}</span></div>
+        <p>Modus ponens/tollens, syllogism, double-negation. It returns <strong>valid / invalid / insufficient</strong> — and abstains rather than guess.</p>
+      </div>
+      <div class="card"><h3>📚 Cited knowledge</h3>
+        <div class="ex"><span class="c">$</span> deeperthawt theorem <span class="ok">"infinitely many primes"</span>
+<span class="o">Euclid, Elements IX.20</span> (c. 300 BCE)</div>
+        <p>Known theorems, science facts, Python knowledge — <strong>retrieval with citations</strong>, not generation. It never fabricates a reference.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE NO-HALLUCINATION CONTRACT -->
+  <section>
+    <h2>The no-hallucination contract</h2>
+    <p class="lead">A reasoning engine that lies is worthless. DeeperThawt is built so it <strong>cannot</strong> lie — because it never guesses.</p>
+    <div class="grid g2">
+      <div class="card"><h3 class="ok">✅ Computed, not generated</h3><p>The math and logic run through a deterministic SymPy/referee pipeline. There is no LLM in the scoring path — nothing to hallucinate with.</p></div>
+      <div class="card"><h3 class="ok">✅ Verifies true, refutes false</h3><p><span class="ok">2+2=4 → verified</span>. <span class="bad">2+2=5 → refuted</span> with a concrete counterexample witness. It proves what it claims.</p></div>
+      <div class="card"><h3 class="ok">✅ Honest abstention</h3><p>For claims outside its provable envelope — open conjectures, non-math statements, mixed claims — it says <strong>"not verifiable"</strong> rather than inventing an answer.</p></div>
+      <div class="card"><h3 class="ok">✅ Reproducible</h3><p>Same input in → byte-identical answer out. Audit it, re-run it, trust it — the numbers are real and stable.</p></div>
+    </div>
+  </section>
+
+  <!-- THE SEMANTIC ENGINE (remote) -->
+  <section id="semantic">
+    <h2>The secret ingredient is server-side</h2>
+    <p class="lead">DeeperThawt's semantic engine — gematria projection, fixed-parameter attention, and a trained latent adapter — finds <strong>semantically-near duplicate</strong> content that byte-level dedup can't. It runs <strong>only on our remote server</strong> and returns <strong>only numbers</strong>.</p>
+    <div class="arch">
+      <div class="blk"><div class="t">You (local package)</div><div class="i">Deterministic solvers<br>(math · logic · knowledge)</div></div>
+      <div class="arrow">→ /assess →</div>
+      <div class="blk lock"><div class="t">🔒 Remote DeeperThawt server</div><div class="i">gematria projection · attention<br>trained latent adapter · tuned weights<br><strong>the method never ships</strong></div></div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><a class="btn vi" href="https://sudo-ai-git.github.io/mcp-token-saver/" target="_blank">See the token-intelligence assessment</a></div>
+  </section>
+
+  <!-- INSTALL -->
+  <section id="install">
+    <h2>Install &amp; run in seconds</h2>
+    <div class="term">
+<span class="p">$</span> pip install deeperthawt<br><br>
+<span class="p">$</span> deeperthawt math <span class="y">"integral of x^2 from 0 to 1"</span><br>
+<span class="o">→ {"status":"solved","answer":0.3333,"verified":true}</span><br><br>
+<span class="p">$</span> deeperthawt selfcheck<br>
+<span class="o">→ 8/8 capabilities verified</span>
+    </div>
+  </section>
+
+  <!-- LICENSE -->
+  <section id="license">
+    <h2>Dual-license: open core, commercial for embedding</h2>
+    <div class="lic">
+      <table>
+        <tr><th>Use case</th><th>License</th></tr>
+        <tr><td>Use in an open-source (AGPL-compatible) project</td><td class="ok">AGPL-3.0 — free</td></tr>
+        <tr><td>Internal research / tooling, not redistributed</td><td class="ok">AGPL-3.0 — free</td></tr>
+        <tr><td>Embed in a <strong>closed-source product or SaaS</strong> without open-sourcing your code</td><td class="vi">Commercial license</td></tr>
+        <tr><td>Resell / sublicense as a proprietary component</td><td class="vi">Commercial license</td></tr>
+      </table>
+      <p style="color:var(--muted);font-size:13.5px;margin-top:16px">See <a href="#top" style="color:var(--acc)">LICENSE.commercial.md</a> in the repo for full terms. Contact the maintainer via GitHub for a commercial license.</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    DeeperThawt · deterministic verifiable reasoning · <a href="https://github.com/sudo-ai-git/deeperthawt" target="_blank">GitHub</a><br>
+    It computes. It never guesses.
+  </div>
+</div>
+</body>
+</html>

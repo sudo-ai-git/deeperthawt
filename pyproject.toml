@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deeperthawt"
+version = "1.0.0"
+description = "DeeperThawt — deterministic verifiable reasoning engine: symbolic math solver, logic inference, knowledge retrieval, FSS verification, and semantic token intelligence. Dual-licensed (AGPL-3.0 open core + commercial license for embedding)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "AGPL-3.0-only (open core); commercial license available for embedding" }
+authors = [{ name = "DeeperThawt maintainer" }]
+keywords = ["verifiable-reasoning", "deterministic", "math-solver", "logic", "no-hallucination", "token-intelligence"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.24",
+    "sympy>=1.10",
+]
+
+[project.optional-dependencies]
+payments = ["requests>=2.31"]
+dev = ["pytest>=7"]
+
+[project.scripts]
+deeperthawt = "deeperthawt.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["deeperthawt*"]
+
+[project.urls]
+Homepage = "https://sudo-ai-git.github.io/deeperthawt/"
+Repository = "https://github.com/sudo-ai-git/deeperthawt"
