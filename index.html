@@ -289,26 +289,26 @@
     const box = document.getElementById("payBox");
     box.style.display = "block";
     const st = document.getElementById("payStatus");
-    st.textContent = "Creating your crypto payment…";
+    st.textContent = "Creating your secure checkout…";
     st.style.color = "";
     try{
       const order = "web-"+Date.now();
       const r = await fetch(`${API_BASE}/nowpayments/create`, {
         method:"POST",
         headers:{"Content-Type":"application/json","X-HWID":deviceId()},
-        body: JSON.stringify({ coin: coin, order_id: order })
+        body: JSON.stringify({ invoice: true, coin: coin, order_id: order })
       });
       const j = await r.json();
-      if(j.pay_address){
-        document.getElementById("payAddr").textContent = j.pay_address;
-        document.getElementById("payAmt").textContent = (j.pay_amount || "?") + " " + (j.pay_currency||coin).toUpperCase();
+      if(j.invoice_url){
+        // NOWPayments hosted checkout carries our order_id -> Pro activates on payment.
+        st.textContent = "Opening secure NOWPayments checkout…";
+        document.getElementById("payAddr").textContent = j.order_id || order;
+        // hide the raw-address box; we send the buyer to the hosted page
+        document.getElementById("payAmt").textContent = "Redirecting to hosted checkout…";
         document.getElementById("payOid").textContent = "Order " + (j.order_id || order);
-        st.textContent = "Send the exact amount to this address — Pro activates on confirmation.";
-        st.style.color = "";
-        // poll the entitlement for THIS order (check takes order_id)
-        pollOrder(order);
+        window.location.href = j.invoice_url;   // go to the hosted payment page
       } else if(j.error){
-        st.textContent = "Could not create payment ("+j.error+").";
+        st.textContent = "Could not create checkout ("+j.error+").";
       } else {
         st.textContent = "Unexpected response ("+r.status+").";
       }
@@ -321,7 +321,6 @@
         const j = await r.json();
         const st = document.getElementById("payStatus");
         if(j.entitled===true){ st.textContent = "✅ Payment confirmed — Pro access active for 30 days."; st.style.color="#4ade80"; return; }
-        // keep polling until confirmed
         pollOrder(order);
       }catch(e){ pollOrder(order); }
     }, 15000);
