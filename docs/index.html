@@ -89,10 +89,11 @@
     <h1><span class="g">DeeperThawt</span><br>Deterministic verifiable reasoning + token intelligence.</h1>
     <p>It solves hard math, verifies logic, refutes false claims with witnesses, retrieves cited knowledge, and finds the semantically-near token waste exact-dedup can't — all computed, never guessed.</p>
     <div class="cta-row">
-      <a class="btn" href="#install">Install · pip install deeperthawt</a>
+      <button class="btn" id="heroTrialBtn" onclick="startTrial(this)">▶ Start the 1-hour free trial — the only way to run it</button>
       <a class="btn ghost" href="#license">Commercial license</a>
       <a class="btn vi" href="#semantic">The semantic engine</a>
     </div>
+    <div class="status" id="heroTrialStatus"></div>
   </div>
 
   <!-- PROOF FIRST -->
@@ -191,20 +192,34 @@
           <button class="coin" onclick="pickCoin(this,'SOL')">SOL</button>
           <button class="coin" onclick="pickCoin(this,'USDT')">USDT</button>
         </div>
+        <div id="payBox" style="display:none;margin-top:16px;background:#0b0f18;border:1px solid #1c2637;border-radius:10px;padding:14px">
+          <div style="font-size:12px;color:#8494a7;margin-bottom:8px">Send exactly this amount to activate Pro:</div>
+          <div style="font-weight:800;font-size:16px" id="payAmt">—</div>
+          <div style="font-size:12px;color:#8494a7;margin:10px 0 4px">Deposit address</div>
+          <div id="payAddr" style="font-family:ui-monospace,Menlo,monospace;font-size:12px;word-break:break-all;background:#070a10;border:1px solid #1c2637;border-radius:6px;padding:8px;color:#38bdf8">—</div>
+          <div style="font-size:11px;color:#8494a7;margin-top:8px" id="payOid"></div>
+        </div>
+        <div class="status" id="payStatus" style="margin-top:10px;font-size:13px"></div>
       </div>
     </div>
   </section>
 
-  <!-- INSTALL -->
-  <section id="install">
-    <h2>Install &amp; run in seconds</h2>
+  <!-- WHAT THE TRIAL RUNS -->
+  <section id="runs">
+    <h2>What you get in your 1-hour trial</h2>
+    <p class="lead">Start the free trial and the full engine runs — here's exactly what it proves in the first minutes.</p>
     <div class="term">
-<span class="p">$</span> pip install deeperthawt<br><br>
-<span class="p">$</span> deeperthawt math <span class="y">"integral of x^2 from 0 to 1"</span><br>
-<span class="o">→ {"status":"solved","answer":0.3333,"verified":true}</span><br><br>
-<span class="p">$</span> deeperthawt selfcheck<br>
-<span class="o">→ 8/8 capabilities verified</span>
+<span class="o">→ hard math:</span> integral of x^2 from 0 to 1 <span class="y">= solved, 1/3</span><br>
+<span class="o">→ verified claim:</span> 2 + 2 = 4 <span class="y">= TRUE</span><br>
+<span class="o">→ refuted claim:</span> 2 + 2 = 5 <span class="y">= FALSE (witness -1 ≠ 0)</span><br>
+<span class="o">→ logic:</span> modus ponens <span class="y">= valid</span><br>
+<span class="o">→ token delta:</span> your agent's semantically-near resends <span class="y">= a number, computed</span><br><br>
+<span class="o">deterministic · reproducible · never guesses</span>
     </div>
+    <div class="cta-row" style="margin-top:22px">
+      <button class="btn" id="runsTrialBtn" onclick="startTrial(this)">▶ Start the 1-hour free trial</button>
+    </div>
+    <div class="status" id="runsTrialStatus"></div>
   </section>
 
   <!-- LICENSE -->
@@ -239,9 +254,13 @@
     return h;
   }
   const orderId = () => localStorage.getItem(TRIAL_KEY) || (localStorage.setItem(TRIAL_KEY, "trial_" + Date.now()), localStorage.getItem(TRIAL_KEY));
+  function statusElFor(btn){
+    const map = {"heroTrialBtn":"heroTrialStatus","runsTrialBtn":"runsTrialStatus"};
+    return document.getElementById(map[btn.id] || "trialStatus");
+  }
   async function startTrial(btn){
     btn.disabled = true;
-    const status = document.getElementById("trialStatus");
+    const status = statusElFor(btn) || document.getElementById("trialStatus");
     if(status) status.textContent = "Starting your 1-hour Pro trial…";
     try{
       const r = await fetch(`${API_BASE}/nowpayments/trial?hours=1`, {
@@ -253,11 +272,60 @@
       if(j.entitled){ if(status) status.textContent = "✅ Trial active for 1 hour — engine live."; }
       else if(j.error==="trial_already_used"){ if(status) status.textContent = "⚠️ This device already used its free trial — subscribe to continue."; }
       else if(j.error==="trial_expired"){ if(status) status.textContent = "⚠️ Trial expired — subscribe to continue."; }
-      else { if(status) status.textContent = "⚠️ Could not start trial ("+(j.error||r.status)+")."; }
-    }catch(e){ if(status) status.textContent = "⚠️ Could not reach trial service ("+e+")."; }
+      else { if(status) status.textContent = "⚠️ Could not start trial ("+((j&&j.error)||r.status)+")."; }
+    }catch(e){ if(status) status.textContent = "⚠️ Could not reach trial service ("+e+"). Try again."; btn.disabled=false; }
   }
-  function initCoins(){ document.getElementById('coins').style.display='flex'; }
-  function pickCoin(el,c){ document.querySelectorAll('.coin').forEach(x=>x.classList.remove('on')); el.classList.add('on'); }
+
+  // ---- crypto payment flow (actually creates a NowPayments payment) ----
+  const COINS = {"BTC":"btc","ETH":"eth","XRP":"xrp","SOL":"sol","USDT":"usdt"};
+  function initCoins(){
+    document.getElementById('coins').style.display='flex';
+    document.getElementById('cryptoBtn').style.display='none';
+  }
+  async function pickCoin(el, label){
+    document.querySelectorAll('.coin').forEach(x=>x.classList.remove('on'));
+    el.classList.add('on');
+    const coin = COINS[label] || "btc";
+    const box = document.getElementById("payBox");
+    box.style.display = "block";
+    const st = document.getElementById("payStatus");
+    st.textContent = "Creating your crypto payment…";
+    st.style.color = "";
+    try{
+      const order = "web-"+Date.now();
+      const r = await fetch(`${API_BASE}/nowpayments/create`, {
+        method:"POST",
+        headers:{"Content-Type":"application/json","X-HWID":deviceId()},
+        body: JSON.stringify({ coin: coin, order_id: order })
+      });
+      const j = await r.json();
+      if(j.pay_address){
+        document.getElementById("payAddr").textContent = j.pay_address;
+        document.getElementById("payAmt").textContent = (j.pay_amount || "?") + " " + (j.pay_currency||coin).toUpperCase();
+        document.getElementById("payOid").textContent = "Order " + (j.order_id || order);
+        st.textContent = "Send the exact amount to this address — Pro activates on confirmation.";
+        st.style.color = "";
+        // poll the entitlement for THIS order (check takes order_id)
+        pollOrder(order);
+      } else if(j.error){
+        st.textContent = "Could not create payment ("+j.error+").";
+      } else {
+        st.textContent = "Unexpected response ("+r.status+").";
+      }
+    }catch(e){ st.textContent = "⚠️ Could not reach payment service ("+e+")."; }
+  }
+  function pollOrder(order){
+    setTimeout(async ()=>{
+      try{
+        const r = await fetch(`${API_BASE}/nowpayments/check?order_id=${encodeURIComponent(order)}`);
+        const j = await r.json();
+        const st = document.getElementById("payStatus");
+        if(j.entitled===true){ st.textContent = "✅ Payment confirmed — Pro access active for 30 days."; st.style.color="#4ade80"; return; }
+        // keep polling until confirmed
+        pollOrder(order);
+      }catch(e){ pollOrder(order); }
+    }, 15000);
+  }
 </script>
 </body>
 </html>
