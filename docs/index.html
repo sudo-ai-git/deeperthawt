@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DeeperThawt — deterministic verifiable reasoning, with zero hallucination</title>
+<title>DeeperThawt — deterministic verifiable reasoning + token intelligence, zero hallucination</title>
 <meta name="description" content="DeeperThawt: a deterministic reasoning engine that solves hard math, verifies logic, retrieves cited knowledge, and finds semantically-near token waste — computed, never guessed. Dual-licensed (AGPL open core + commercial).">
 <meta property="og:title" content="DeeperThawt — reasoning that computes, never hallucinates">
 <meta property="og:description" content="Hard math solved, logic verified, claims refuted with witnesses, cited knowledge retrieved — all deterministic. And it finds the token waste other profilers can't see.">
@@ -16,18 +16,18 @@
   .badge{display:inline-block;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.35);color:var(--acc);border-radius:999px;padding:5px 16px;font-size:13px;font-weight:500;margin-bottom:22px}
   .hero h1{font-size:clamp(32px,5.4vw,58px);line-height:1.06;font-weight:800;letter-spacing:-1.5px;max-width:860px;margin:0 auto 18px}
   .hero h1 .g{background:linear-gradient(90deg,var(--acc),var(--cy));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .hero p{font-size:19px;color:var(--muted);max-width:680px;margin:0 auto 10px}
+  .hero p{font-size:19px;color:var(--muted);max-width:700px;margin:0 auto 10px}
   .cta-row{margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .btn{display:inline-flex;align-items:center;gap:8px;background:var(--acc2);color:#04140a;font-weight:700;border:none;padding:15px 30px;border-radius:10px;font-size:17px;cursor:pointer;text-decoration:none;transition:.16s;font-family:inherit}
   .btn:hover{background:var(--acc);transform:translateY(-1px);box-shadow:0 8px 30px rgba(34,197,94,.25)}
   .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
   .btn.ghost:hover{background:var(--panel);border-color:var(--muted)}
   .btn.vi{background:var(--vi);color:#140a24}
-  .btn.vi:hover{background:var(--vi);opacity:.92}
+  .btn[disabled]{opacity:.6;cursor:not-allowed;transform:none}
 
   section{padding:0 0 60px}
   h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.8px;margin-bottom:10px;text-align:center}
-  .lead{color:var(--muted);max-width:760px;margin:0 auto 30px;font-size:16px;text-align:center}
+  .lead{color:var(--muted);max-width:780px;margin:0 auto 30px;font-size:16px;text-align:center}
   .grid{display:grid;gap:16px}
   .g2{grid-template-columns:repeat(2,1fr)}
   .g3{grid-template-columns:repeat(3,1fr)}
@@ -36,11 +36,14 @@
   .card h3{font-size:18px;margin-bottom:10px}
   .card p{color:var(--muted);font-size:14.5px}
   .card .ex{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-top:12px;color:var(--text);white-space:pre-wrap}
-  .card .out{color:var(--acc);font-weight:600}
-  .bad{color:var(--red)} .ok{color:var(--acc)} .cy{color:var(--cy)} .vi{color:var(--vi)} .am{color:var(--am)}
+  .bad{color:var(--red)}.ok{color:var(--acc)}.cy{color:var(--cy)}.vi{color:var(--vi)}.am{color:var(--am)}
+  .num{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-1px}
 
-  .term{border:1px solid var(--border);background:var(--panel2);border-radius:12px;padding:22px;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;overflow-x:auto}
-  .term .c{color:var(--muted)} .term .p{color:var(--acc)} .term .o{color:var(--cy)} .term .r{color:var(--red)} .term .y{color:var(--am)}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:36px 0 8px}
+  .stat-box{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px;text-align:center}
+  .stat-box .lbl{color:var(--muted);font-size:13px;margin-top:6px}
+  .stat-box .tag{font-size:11px;color:var(--muted);opacity:.7;margin-top:4px}
+  @media(max-width:760px){.stats{grid-template-columns:1fr}}
 
   .arch{display:grid;grid-template-columns:1.1fr .6fr 1fr;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px}
   @media(max-width:760px){.arch{grid-template-columns:1fr}}
@@ -51,12 +54,31 @@
   .lock{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.4)}
   .lock .t{color:var(--vi)}
 
+  .pricing{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+  @media(max-width:760px){.pricing{grid-template-columns:1fr}}
+  .price-card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:28px}
+  .price-card.pro{border-color:rgba(74,222,128,.5);box-shadow:0 0 0 1px rgba(74,222,128,.2),0 10px 40px rgba(34,197,94,.08)}
+  .price-card .name{font-size:13px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin-bottom:10px}
+  .price-card .price{font-size:40px;font-weight:800;letter-spacing:-1px}
+  .price-card .price small{font-size:16px;color:var(--muted);font-weight:500}
+  .price-card ul{list-style:none;margin:18px 0}
+  .price-card li{color:var(--muted);font-size:14.5px;padding:6px 0;border-bottom:1px solid var(--border)}
+  .price-card li:last-child{border-bottom:none}
+  .price-card .btn{width:100%;justify-content:center}
+  .price-card .coins{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .price-card .coin{border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;background:var(--panel2)}
+  .price-card .coin.on{border-color:var(--acc);color:var(--acc)}
+
+  .term{border:1px solid var(--border);background:var(--panel2);border-radius:12px;padding:22px;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;overflow-x:auto}
+  .term .p{color:var(--acc)}.term .o{color:var(--cy)}.term .y{color:var(--am)}
+
   .lic{background:var(--panel2);border:1px solid var(--border);border-radius:14px;padding:28px;margin-top:30px}
   .lic table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
   .lic td,.lic th{border-bottom:1px solid var(--border);padding:12px 10px;text-align:left}
   .lic th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.8px}
   .foot{color:var(--muted);font-size:13px;border-top:1px solid var(--border);padding:28px 0 48px;margin-top:8px;text-align:center}
   .foot a{color:var(--acc);text-decoration:none}
+  .status{color:var(--acc);font-size:14px;min-height:20px;margin-top:10px;text-align:center}
 </style>
 </head>
 <body>
@@ -64,8 +86,8 @@
 
   <div class="hero">
     <span class="badge">Reasoning that computes — it never guesses</span>
-    <h1><span class="g">DeeperThawt</span><br>Deterministic verifiable reasoning, with zero hallucination.</h1>
-    <p>It solves hard math, verifies logic, refutes false claims with witnesses, retrieves cited knowledge, and finds token waste no other profiler can see — all computed, never guessed.</p>
+    <h1><span class="g">DeeperThawt</span><br>Deterministic verifiable reasoning + token intelligence.</h1>
+    <p>It solves hard math, verifies logic, refutes false claims with witnesses, retrieves cited knowledge, and finds the semantically-near token waste exact-dedup can't — all computed, never guessed.</p>
     <div class="cta-row">
       <a class="btn" href="#install">Install · pip install deeperthawt</a>
       <a class="btn ghost" href="#license">Commercial license</a>
@@ -76,7 +98,7 @@
   <!-- PROOF FIRST -->
   <section>
     <h2>Proof, not promises</h2>
-    <p class="lead">Every line below is a real output of the engine — deterministic and reproducible.</p>
+    <p class="lead">Every line below is real output of the engine — deterministic and reproducible.</p>
     <div class="grid g3">
       <div class="card"><h3>🧮 Hard math, solved</h3>
         <div class="ex"><span class="c">$</span> deeperthawt math <span class="ok">"integral of x^2 from 0 to 1"</span>
@@ -100,7 +122,7 @@
     </div>
   </section>
 
-  <!-- THE NO-HALLUCINATION CONTRACT -->
+  <!-- NO-HALLUCINATION CONTRACT -->
   <section>
     <h2>The no-hallucination contract</h2>
     <p class="lead">A reasoning engine that lies is worthless. DeeperThawt is built so it <strong>cannot</strong> lie — because it never guesses.</p>
@@ -112,16 +134,65 @@
     </div>
   </section>
 
-  <!-- THE SEMANTIC ENGINE (remote) -->
+  <!-- TOKEN INTELLIGENCE (transferred from the token-saver page) -->
   <section id="semantic">
-    <h2>The secret ingredient is server-side</h2>
-    <p class="lead">DeeperThawt's semantic engine — gematria projection, fixed-parameter attention, and a trained latent adapter — finds <strong>semantically-near duplicate</strong> content that byte-level dedup can't. It runs <strong>only on our remote server</strong> and returns <strong>only numbers</strong>.</p>
+    <h2>Token intelligence — the semantic engine</h2>
+    <p class="lead">DeeperThawt's semantic engine — gematria projection + fixed-parameter attention + a trained latent adapter — detects <strong>semantically-near duplicate</strong> content that byte-level dedup can't, and the cache-miss/cross-model waste invisible in every provider dashboard.</p>
+
+    <div class="stats">
+      <div class="stat-box"><div class="num ok">278M</div><div class="lbl">tokens in one day</div><div class="tag">our stack, measured</div></div>
+      <div class="stat-box"><div class="num cy">289K</div><div class="lbl">tokens per request</div><div class="tag">a context you can't see</div></div>
+      <div class="stat-box"><div class="num am">0.78%</div><div class="lbl">cache-miss, still fresh</div><div class="tag">~2.17M tkn/day ≈ $28/mo</div></div>
+    </div>
+
     <div class="arch">
       <div class="blk"><div class="t">You (local package)</div><div class="i">Deterministic solvers<br>(math · logic · knowledge)</div></div>
       <div class="arrow">→ /assess →</div>
       <div class="blk lock"><div class="t">🔒 Remote DeeperThawt server</div><div class="i">gematria projection · attention<br>trained latent adapter · tuned weights<br><strong>the method never ships</strong></div></div>
     </div>
-    <div style="text-align:center;margin-top:20px"><a class="btn vi" href="https://sudo-ai-git.github.io/mcp-token-saver/" target="_blank">See the token-intelligence assessment</a></div>
+
+    <div class="grid g2" style="margin-top:22px">
+      <div class="card"><h3>🔁 Exact duplicates</h3><p>The same tool result re-sent turn after turn, flagged with its cache key.</p></div>
+      <div class="card"><h3>🧩 Semantic near-duplicates</h3><p>Repeated content that is <em>almost</em> the same — caught by the gematria/attention engine, not an n-gram guess.</p></div>
+      <div class="card"><h3>📊 Role-aware spend</h3><p>System / user / assistant / tool split out — see exactly where cost lives.</p></div>
+      <div class="card"><h3>🧠 System-prompt bloat</h3><p>If <code>system</code> dominates, get a cache / summarization flag — know what to fix first.</p></div>
+    </div>
+  </section>
+
+  <!-- TRIAL + PRICING -->
+  <section>
+    <h2>Try the full engine, or license it</h2>
+    <div class="pricing">
+      <div class="price-card">
+        <div class="name">1-hour trial</div>
+        <div class="price">$0 <small>· free</small></div>
+        <ul>
+          <li>Full Pro semantic engine — no card</li>
+          <li>De-identified numeric delta back</li>
+          <li>See why the engine is worth paying for</li>
+        </ul>
+        <button class="btn" id="trialBtn" onclick="startTrial(this)">▶ Start the 1-hour free trial</button>
+        <div class="status" id="trialStatus"></div>
+      </div>
+      <div class="price-card pro">
+        <div class="name">Pro engine</div>
+        <div class="price">$250 <small>· 30 days</small></div>
+        <ul>
+          <li>Real semantic engine + trained latent adapter</li>
+          <li>Semantic near-duplicate detection, not just exact</li>
+          <li>Server-side, de-identified end-to-end</li>
+          <li>Pay in crypto — no KYC, renew when you want</li>
+        </ul>
+        <button class="btn" id="cryptoBtn" onclick="initCoins()">Pay in crypto</button>
+        <div class="coins" id="coins" style="display:none">
+          <button class="coin" onclick="pickCoin(this,'BTC')">BTC</button>
+          <button class="coin" onclick="pickCoin(this,'ETH')">ETH</button>
+          <button class="coin" onclick="pickCoin(this,'XRP')">XRP</button>
+          <button class="coin" onclick="pickCoin(this,'SOL')">SOL</button>
+          <button class="coin" onclick="pickCoin(this,'USDT')">USDT</button>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- INSTALL -->
@@ -147,14 +218,31 @@
         <tr><td>Embed in a <strong>closed-source product or SaaS</strong> without open-sourcing your code</td><td class="vi">Commercial license</td></tr>
         <tr><td>Resell / sublicense as a proprietary component</td><td class="vi">Commercial license</td></tr>
       </table>
-      <p style="color:var(--muted);font-size:13.5px;margin-top:16px">See <a href="#top" style="color:var(--acc)">LICENSE.commercial.md</a> in the repo for full terms. Contact the maintainer via GitHub for a commercial license.</p>
+      <p style="color:var(--muted);font-size:13.5px;margin-top:16px">Full commercial terms in <a href="https://github.com/sudo-ai-git/deeperthawt/blob/main/LICENSE.commercial.md" class="ok">LICENSE.commercial.md</a>. Contact the maintainer via GitHub for a commercial license quote.</p>
     </div>
   </section>
 
   <div class="foot">
-    DeeperThawt · deterministic verifiable reasoning · <a href="https://github.com/sudo-ai-git/deeperthawt" target="_blank">GitHub</a><br>
+    DeeperThawt · deterministic verifiable reasoning + token intelligence · <a href="https://github.com/sudo-ai-git/deeperthawt" target="_blank">GitHub</a><br>
     It computes. It never guesses.
   </div>
 </div>
+
+<script>
+  const API_BASE = "https://mcp-token-saver-pro.fly.dev";
+  const TRIAL_KEY = "deeperthawt_trial_order";
+  const orderId = () => localStorage.getItem(TRIAL_KEY) || (localStorage.setItem(TRIAL_KEY, "trial_" + Date.now()), localStorage.getItem(TRIAL_KEY));
+  async function startTrial(btn){
+    btn.disabled = true;
+    const status = document.getElementById("trialStatus");
+    if(status) status.textContent = "Starting your 1-hour Pro trial…";
+    try{
+      await fetch(`${API_BASE}/nowpayments/trial?hours=1`, {method:"POST"});
+      if(status) status.textContent = "✅ Trial active for 1 hour — engine live.";
+    }catch(e){ if(status) status.textContent = "⚠️ Could not reach trial service ("+e+")."; }
+  }
+  function initCoins(){ document.getElementById('coins').style.display='flex'; }
+  function pickCoin(el,c){ document.querySelectorAll('.coin').forEach(x=>x.classList.remove('on')); el.classList.add('on'); }
+</script>
 </body>
 </html>

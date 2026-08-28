@@ -87,7 +87,7 @@ deeperthawt selfcheck        # 8/8 capability smoke test
 ## License: dual-license
 
 - **Open core (AGPL-3.0)**: the deterministic solvers (math, logic, knowledge) are open source under AGPL.
-- **Commercial license**: available for embedding DeeperThawt inside a **closed-source product or SaaS** without AGPL obligations. See [`LICENSE.commercial.md`](LICENSE.commercial.md).
+- **Commercial license**: for embedding DeeperThawt inside a **closed-source product or SaaS** without AGPL obligations. View the full commercial grant in [`LICENSE.commercial.md`](LICENSE.commercial.md).
 
 For a commercial license, contact the maintainer via the [landing page](https://sudo-ai-git.github.io/deeperthawt/).
 
