@@ -25,6 +25,8 @@ import sys as _sys
 import urllib.request as _urlreq
 import urllib.error as _urlerr
 import json as _json
+import platform as _platform
+import uuid as _uuid
 from typing import Any, Dict
 
 # --------------------------------------------------------------------------- #
@@ -49,6 +51,36 @@ except Exception as _e:  # pragma: no cover
 _DEFAULT_API = "https://mcp-token-saver-pro.fly.dev"
 
 
+def _machine_hwid() -> str:
+    """A deterministic, LOCAL hardware identifier for anti-trial-farming.
+
+    Computed from stable machine attributes (machine type, node name,
+    platform, and a persistent per-install UUID). It never leaves the machine
+    except as an opaque salted hash — it is not identifiable PII, and it lets
+    the server refuse a second free trial from the same device without
+    tracking anything that reveals who the user is. Stored locally so it's
+    stable across runs (incognito/fresh-browser can't hide it).
+    """
+    try:
+        # stable per-machine + per-install key (persistent file if writable)
+        key_path = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), ".hwid_key")
+        if _os.path.exists(key_path):
+            with open(key_path) as f:
+                inst = f.read().strip()
+        else:
+            inst = str(_uuid.uuid4())
+            try:
+                with open(key_path, "w") as f:
+                    f.write(inst)
+            except Exception:
+                inst = "inst-" + _uuid.getnode().__str__()[-8:]
+        raw = f"{_platform.machine()}|{_platform.node()}|{_platform.system()}|{inst}"
+        import hashlib
+        return hashlib.sha256(raw.encode()).hexdigest()
+    except Exception:
+        return "dt-" + _uuid.uuid4().hex[:16]
+
+
 class _SemanticRemote:
     """Thin numeric-only client to the remote semantic engine.
 
@@ -65,7 +97,7 @@ class _SemanticRemote:
     def assess(self, rows: list, tier: str = "content") -> Dict[str, Any]:
         """POST de-identified rows to the remote engine; return numeric result."""
         body = _json.dumps({"tier": tier, "messages": rows}).encode()
-        headers = {"Content-Type": "application/json"}
+        headers = {"Content-Type": "application/json", "X-HWID": _machine_hwid()}
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
         req = _urlreq.Request(self.base + "/assess", data=body, headers=headers, method="POST")

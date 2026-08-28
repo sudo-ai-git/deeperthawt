@@ -231,14 +231,29 @@
 <script>
   const API_BASE = "https://mcp-token-saver-pro.fly.dev";
   const TRIAL_KEY = "deeperthawt_trial_order";
+  // Stable device id for anti-trial-farming (opaque, local, not PII).
+  const HWID_KEY = "deeperthawt_hwid";
+  function deviceId(){
+    let h = localStorage.getItem(HWID_KEY);
+    if(!h){ h = "web-"+Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,"0")).join(""); localStorage.setItem(HWID_KEY, h); }
+    return h;
+  }
   const orderId = () => localStorage.getItem(TRIAL_KEY) || (localStorage.setItem(TRIAL_KEY, "trial_" + Date.now()), localStorage.getItem(TRIAL_KEY));
   async function startTrial(btn){
     btn.disabled = true;
     const status = document.getElementById("trialStatus");
     if(status) status.textContent = "Starting your 1-hour Pro trial…";
     try{
-      await fetch(`${API_BASE}/nowpayments/trial?hours=1`, {method:"POST"});
-      if(status) status.textContent = "✅ Trial active for 1 hour — engine live.";
+      const r = await fetch(`${API_BASE}/nowpayments/trial?hours=1`, {
+        method:"POST",
+        headers: {"Content-Type":"application/json", "X-HWID": deviceId()},
+        body: JSON.stringify({})
+      });
+      const j = await r.json();
+      if(j.entitled){ if(status) status.textContent = "✅ Trial active for 1 hour — engine live."; }
+      else if(j.error==="trial_already_used"){ if(status) status.textContent = "⚠️ This device already used its free trial — subscribe to continue."; }
+      else if(j.error==="trial_expired"){ if(status) status.textContent = "⚠️ Trial expired — subscribe to continue."; }
+      else { if(status) status.textContent = "⚠️ Could not start trial ("+(j.error||r.status)+")."; }
     }catch(e){ if(status) status.textContent = "⚠️ Could not reach trial service ("+e+")."; }
   }
   function initCoins(){ document.getElementById('coins').style.display='flex'; }

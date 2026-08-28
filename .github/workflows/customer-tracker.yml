@@ -1,0 +1,58 @@
+name: customer-tracker-daily
+
+# Pulls the DeeperThawt customer/HWID ledger from the live server and writes
+# it to a private artifact + git branch so you can track adopters over time.
+# Runs daily; also on manual /workflow_dispatch.
+#
+# NOTE: the endpoint returns only opaque HWID hashes + entitlement state (no
+# PII — no name/email/IP). This is usage-count tracking, not user profiling.
+
+on:
+  schedule:
+    - cron: "30 2 * * *"      # daily 02:30 UTC
+  workflow_dispatch: {}
+
+jobs:
+  pull-customers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch customer ledger (authed, opaque hwids only)
+        env:
+          NOWPAYMENTS_API_KEY: ${{ secrets.NOWPAYMENTS_API_KEY }}
+          SERVER: "https://mcp-token-saver-pro.fly.dev"
+        run: |
+          set -e
+          if [ -z "$NOWPAYMENTS_API_KEY" ]; then
+            echo "NOWPAYMENTS_API_KEY secret not set — skipping (no error: workflow is safe pre-secret)."
+            exit 0
+          fi
+          ts="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          mkdir -p customer_snapshots
+          curl -fsS "$SERVER/nowpayments/customers" \
+            -H "Authorization: Bearer $NOWPAYMENTS_API_KEY" \
+            -o "customer_snapshots/$ts.json" \
+            --max-time 30
+          # Keep the latest as a stable pointer for quick review
+          cp "customer_snapshots/$ts.json" "customer_snapshots/LATEST.json"
+          echo "Fetched $(jq -r '.count' "customer_snapshots/$ts.json") customers at $ts"
+
+      - name: Commit snapshot (idempotent, no-op when unchanged)
+        run: |
+          git config user.name "hello-deeperthawt-bot"
+          git config user.email "actions@github.com"
+          git add customer_snapshots/ || true
+          if git diff --cached --quiet; then
+            echo "no change — nothing to commit"
+          else
+            git commit -m "chore: customer snapshot $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - name: Upload artifact (backup even if branch push races)
+        uses: actions/upload-artifact@v4
+        with:
+          name: customer-snapshots
+          path: customer_snapshots/
+          if-no-files-found: ignore
