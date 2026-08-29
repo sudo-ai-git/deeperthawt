@@ -31,6 +31,26 @@
 
 The **secret ingredients** — the semantic projection method, the fixed-parameter attention, the trained latent adapter, and the tuned weights — are **never shipped locally**. A local buyer gets a pip package with the deterministic solvers and a thin RPC client; the secret engine runs only on the remote DeeperThawt server behind a paid entitlement gate, returning **numbers only**.
 
+## Service layer (unified product — thawt-api merged)
+
+As of v2.0.0, the deterministic engine ships with a built-in no-LLM HTTP service
+(`deeperthawt.service`). Run it locally:
+
+```bash
+python -m deeperthawt.service          # http://127.0.0.1:8105
+# THAWT_HOST / THAWT_PORT / THAWT_API_KEY (optional bearer) / THAWT_DEBUG
+```
+
+Endpoints: `/healthz`, `/v1/math/verify`, `/v1/math/solve`, `/v1/logic/verify`,
+`/v1/knowledge/{theorem,science,python}`, `/v1/semantic/assess`,
+`/v1/evidence` (measured token-cost intelligence), `/v1/capabilities`.
+
+> Merge note (2026-08-29): this service folds in the former `thawt-api` repo and
+> calls the local `DeeperThawt` engine directly (the thawt-api repo carried
+> byte-identical copies of the same engine files — a dual-vendor hazard now
+> removed). `token-analytics` is wired in as the deterministic `/v1/evidence`
+> data product. One product, one engine, one deployable service.
+
 ## Install
 
 ```bash
