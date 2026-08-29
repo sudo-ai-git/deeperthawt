@@ -106,6 +106,71 @@ FACTS: List[Dict[str, Any]] = [
                 "shells that govern chemical behavior."),
         "reference": "Rutherford (1911); Bohr (1913).",
     },
+    # -- physical constants used by the deterministic register/lab (hybrid-agi
+    #    Maxwell-Lorentz FDTD). Values are the SAME constants the lab hard-codes
+    #    (maxwell_lorentz_lab.py) and are externally locked against CODATA in
+    #    fixtures_external/1d_analytic_references.py. Adding them makes the
+    #    reasoning/knowledge surface agree with the lab's own physics. --
+    {
+        "keys": ["speed of light", "speed light", "299792458", "c0", "velocity of light", "light speed"],
+        "fact": ("The speed of light in vacuum c0 = 299,792,458 m/s exactly (the "
+                 "metre is defined so that c0 is exact). This is the speed at "
+                 "which electromagnetic waves propagate in vacuum."),
+        "why": ("c0 is a defining physical constant (SI); in the register/lab FDTD "
+                "it sets the electromagnetic wave-propagation speed and the "
+                "Courant stability limit dt <= dz/c0."),
+        "reference": "SI definition of the metre (1983); CODATA 2018 (exact).",
+    },
+    {
+        "keys": ["vacuum impedance", "free space impedance", "z0", "impedance of vacuum", "wave impedance"],
+        "fact": ("The vacuum (free-space) impedance Z0 = 376.730313668 Ohm exactly, "
+                 "given by Z0 = mu0*c0 = sqrt(mu0/eps0). It is the ratio of "
+                 "electric to magnetic field amplitude for a plane wave in vacuum."),
+        "why": ("Z0 = sqrt(mu0/eps0) follows from the wave impedance of a "
+                "transverse electromagnetic (TEM) wave; with mu0=4*pi*1e-7 and "
+                "c0 exact it equals 376.730313668 Ohm exactly."),
+        "reference": "CODATA 2018 (exact via mu0 and c0).",
+    },
+    {
+        "keys": ["vacuum permittivity", "electric constant", "eps0", "epsilon 0", "epsilon0", "permittivity of free space"],
+        "fact": ("The vacuum permittivity eps0 = 8.8541878128e-12 F/m (CODATA 2018), "
+                 "the constant relating electric field and displacement in vacuum "
+                 "(Gauss's law: div D = rho, D = eps0*E)."),
+        "why": ("eps0 enters Maxwell's equations and the Lorentz force; in the lab "
+                "it sets the displacement-current term and how charge density "
+                "produces electric field."),
+        "reference": "CODATA 2018 (with uncertainty 0.000000005 e-12 F/m).",
+    },
+    {
+        "keys": ["vacuum permeability", "magnetic constant", "mu0", "mu 0", "permeability of free space"],
+        "fact": ("The vacuum permeability mu0 = 1.25663706212e-6 H/m (CODATA 2018). "
+                 "It relates magnetic field and magnetizing field in vacuum "
+                 "(Ampere's law), and gives the free-space impedance via Z0 = mu0*c0."),
+        "why": ("Historically mu0 was defined as exactly 4*pi*1e-7 H/m; after the "
+                "2019 SI redefinition it is a measured value with uncertainty. "
+                "c0*mu0*eps0 = 1 in vacuum."),
+        "reference": "CODATA 2018.", 
+    },
+    {
+        "keys": ["electromagnetic wave", "em wave", "light wave", "propagates at c", "speed of em"],
+        "fact": ("An electromagnetic wave in vacuum propagates at the speed of "
+                 "light c0 = 299,792,458 m/s, with mutually perpendicular electric "
+                 "(E) and magnetic (B) fields transverse to the direction of travel."),
+        "why": ("EM waves follow from Maxwell's equations; in a TEM wave the "
+                "electric and magnetic field magnitudes satisfy E/B = c0 and "
+                "Hn = Z0*By (the lab's normalized magnetic field is Hn = Z0*By)."),
+        "reference": "Maxwell (1865); the register/lab TEM gate (Hn = -Ez normalized).",
+    },
+    {
+        "keys": ["lorentz force", "force on charge", "q e + v cross b", "lorentz"],
+        "fact": ("The Lorentz force is the force on a point charge q with velocity v "
+                 "in electric field E and magnetic field B: F = q*(E + v x B)."),
+        "why": ("This is the mechanical force Maxwell-Lorentz dynamics uses to "
+                "push charged particles through the lab's electromagnetic field; "
+                "for v parallel to B the v x B term vanishes (the lab gate tests "
+                "pure-E and pure-B cases to 0.0% against the analytic formula)."),
+        "reference": "Hendrik Lorentz (1892); the register/lab E4 gate (Lorentz 0.0%).",
+    },
 ]
 
 
