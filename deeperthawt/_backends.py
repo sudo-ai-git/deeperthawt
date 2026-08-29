@@ -34,6 +34,7 @@ from ._backends_core import (  # noqa: E402
     parse_known_theorem,
     lookup_science_fact_combined,
     lookup_python_knowledge_combined,
+    lookup_puzzle_combined,
 )
 
 # Safety: if anyone tries to vendored-import the semantic engine here it must
@@ -42,5 +43,5 @@ from ._backends_core import (  # noqa: E402
 __all__ = [
     "MathematicalOracle", "evaluate_inference", "verify_logic_argument",
     "parse_known_theorem", "lookup_science_fact_combined",
-    "lookup_python_knowledge_combined",
+    "lookup_python_knowledge_combined", "lookup_puzzle_combined",
 ]

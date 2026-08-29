@@ -30,9 +30,11 @@ from logic_engine import (  # noqa: E402
 from known_theorems import parse_known_theorem  # noqa: E402
 from scientific_knowledge import lookup_science_fact_combined  # noqa: E402
 from python_knowledge import lookup_python_knowledge_combined  # noqa: E402
+from puzzle_knowledge import lookup_puzzle_combined  # noqa: E402
 
 __all__ = [
     "MathematicalOracle", "evaluate_inference", "verify_logic_argument",
     "parse_known_theorem", "lookup_science_fact_combined",
     "lookup_python_knowledge_combined",
+    "lookup_puzzle_combined",
 ]

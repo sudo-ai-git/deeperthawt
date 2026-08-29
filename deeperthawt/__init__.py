@@ -41,6 +41,7 @@ try:
         parse_known_theorem,
         lookup_science_fact_combined,
         lookup_python_knowledge_combined,
+        lookup_puzzle_combined,
     )
     _HAS_LOCAL = True
 except Exception as _e:  # pragma: no cover
@@ -137,6 +138,9 @@ class DeeperThawt:
     def knowledge_python(self, text: str) -> dict:
         return lookup_python_knowledge_combined(text)
 
+    def knowledge_puzzle(self, text: str) -> dict:
+        return lookup_puzzle_combined(text)
+
     # -- semantic token intelligence (REMOTE, numeric-only) ------------------
     def semantic_assess(self, messages: list, tier: str = "content") -> dict:
         """Ask the remote semantic engine to assess token redundancy.
@@ -168,5 +172,5 @@ __all__ = [
     "DeeperThawt", "version", "api_status",
     "MathematicalOracle", "evaluate_inference", "verify_logic_argument",
     "parse_known_theorem", "lookup_science_fact_combined",
-    "lookup_python_knowledge_combined",
+    "lookup_python_knowledge_combined", "lookup_puzzle_combined",
 ]
