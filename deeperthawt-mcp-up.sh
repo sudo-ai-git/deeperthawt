@@ -10,7 +10,16 @@
 # knowledge_theorem/science/python, semantic_assess, evidence, capabilities.
 set -euo pipefail
 URL="http://127.0.0.1:8000/mcp"
-if curl -sf -o /dev/null "$URL" 2>/dev/null; then
+# The MCP endpoint answers a bare GET with HTTP 406 (correct spec behaviour —
+# it wants an Accept header). So "alive" = HTTP 406 OR 200/204; do NOT treat
+# 406 as failure or curl's -f (which errors on any 4xx) will false-negative and
+# spawn a competing server every tick.
+_alive() {
+  local code
+  code=$(curl -s -o /dev/null -w "%{http_code}" "$URL" 2>/dev/null || echo 000)
+  [ "$code" = "406" ] || [ "$code" = "200" ] || [ "$code" = "204" ]
+}
+if _alive; then
   echo "deeperthawt MCP already up at $URL"
   exit 0
 fi
@@ -19,7 +28,7 @@ nohup python3 -c "from deeperthawt.mcp_fast import _make_server; _make_server().
   >> /home/sudosudo/deeperthawt/mcp_fast.log 2>&1 &
 for i in $(seq 1 20); do
   sleep 0.5
-  if curl -sf -o /dev/null "$URL" 2>/dev/null; then
+  if _alive; then
     echo "deeperthawt MCP up at $URL (pid $!)"
     exit 0
   fi
